@@ -179,6 +179,18 @@ Sidebar.Scene = function ( editor ) {
 
 		var camera = editor.camera;
 		var scene = editor.scene;
+		var toggleChildren = function (optionElement, nbChilds) {
+			var cursorElement = optionElement;
+			var toggleIn = cursorElement.classList.contains('in');
+
+			cursorElement.classList.toggle('in');
+			cursorElement.classList.toggle('out');
+
+			for (var i = 0; i < nbChilds; i++) {
+				cursorElement.nextSibling.style.display = toggleIn ? 'none' : 'block';
+				cursorElement = cursorElement.nextSibling;
+			}
+		};
 
 		var options = [];
 
@@ -188,15 +200,27 @@ Sidebar.Scene = function ( editor ) {
 		( function addObjects( objects, pad ) {
 
 			for ( var i = 0, l = objects.length; i < l; i ++ ) {
+				(function(){
+					var object = objects[ i ];
 
-				var object = objects[ i ];
+					var option = buildOption( object, true );
+					option.style.paddingLeft = ( pad * 10 ) + 'px';
+					option.style.fontSize = ( 11 - pad * .3 ) + 'px';
+					options.push( option );
 
-				var option = buildOption( object, true );
-				option.style.paddingLeft = ( pad * 10 ) + 'px';
-				options.push( option );
+					if (object.children.length) {
+						setTimeout(() => {
+							option.classList.add('toggle', 'in');
+							// toggleChildren(option, object.children.length);
+						}, 100);
 
-				addObjects( object.children, pad + 1 );
-
+						option.addEventListener('click', function () {
+							toggleChildren(this, object.children.length);
+						});
+						option.click();
+					}
+					addObjects( object.children, pad + 1 );
+				})();
 			}
 
 		} )( scene.children, 1 );

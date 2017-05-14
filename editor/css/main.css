@@ -91,6 +91,18 @@ textarea, input { outline: none; } /* osx */
 
 }
 
+#outliner .option.toggle:before {
+	margin-left: -6px;
+}
+
+#outliner .option.toggle.in:before {
+	content: '▾'
+}
+
+#outliner .option.toggle.out:before {
+	content: '▸'
+}
+
 #outliner .type {
 	position:relative;
 	top:-2px;
